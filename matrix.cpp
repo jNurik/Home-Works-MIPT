@@ -127,7 +127,7 @@ public:
 		}
 		return iter;
 	}
-    
+  
 	template <size_t N, size_t M, typename T>
 	friend size_t Rank(Matrix<N, M, T> object);
 
