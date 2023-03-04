@@ -1,5 +1,3 @@
-#pragma once
-
 #include <algorithm>
 #include <iostream>
 #include <vector>
@@ -128,7 +126,6 @@ public:
 		return iter;
 	}
   
-	template <size_t N, size_t M, typename T>
 	friend size_t Rank(Matrix<N, M, T> object);
 
 private:
@@ -399,6 +396,7 @@ public:
 		return det;
 	}
 	Matrix InverseMatrix() {
+		Matrix<N, N, T> tmp = *this;
 		std::vector<std::vector<T>> e(N, std::vector<T>(N));
 		for (size_t i = 0; i < N; ++i) {
 			for (size_t j = 0; j < N; ++j) {
@@ -406,7 +404,7 @@ public:
 				else { e[i][j] = 0; }
 			}
 		}
-		Matrix<N, N, double> E(e);
+		Matrix<N, N, T> E(e);
 
 		size_t iter = 0;
 		for (size_t j = 0; j < N; ++j) {
@@ -434,14 +432,13 @@ public:
 			}
 			if (iter >= N) { break; }
 		}
+		*this = tmp;
 		return E;
 	}
 
-	template <size_t N, size_t M, typename T>
-	friend size_t Rank(Matrix<N, M, T> object);
+	friend size_t Rank(Matrix object);
 
-	template <size_t N, typename T>
-	friend T det(Matrix<N, N, T> object);
+	friend T det(Matrix object);
 
 private:
 	std::vector<std::vector<T>> arr_;
@@ -451,6 +448,26 @@ template <size_t N, typename T>
 T det(Matrix<N, N, T> object) { return object.det(); }
 
 int main() {
+	std::vector<std::vector<long long>> a(100, std::vector<long long>(100));
+	for (size_t i = 0; i < 100; ++i) {
+		for (size_t j = 0; j < 100; ++j) {
+			a[i][j] = 100 * (i) + j + 1;
+		}
+	}
+	
+  Matrix<100, 100, long long> A(a);
+	std::cout << A.det();
+	Matrix<100, 100, long long> B(a);
+	std::vector<Matrix<100, 100, long long>> m(100);
+	m[0] = A;
+	for (size_t i = 2; i < 100; ++i) {
+		for (size_t j = 1; j < i; ++j) {
+			B = A * m[j - 1];
+			m[j] = B;
+		}
+		std::cout << (B == A);
+	}
+
 	//std::vector<std::vector<double>> a = { {0,6,0,0,0,0}, {0,1,0,0,0,0}, {0,0,1,0,0,0}, {0,0,0,1,0,0}, {8,0,0,0,1,7}};
 	////for (size_t i = 0; i < 5; ++i) {
 	////	for (size_t j = 0; j < 6; ++j) {
@@ -459,17 +476,17 @@ int main() {
 	////}
 	//Matrix<5, 6, double> A(a);
 	//std::cout << A.GetStepView() << Rank(A) << std::endl;
-	{
-		std::vector<std::vector<double>> b = { {1,1,0},{1,0,1},{0,1,1} };
-		Matrix<3, 3, double> B(b);
-		std::cout << "fuck: " << std::endl << B.InverseMatrix() << '\n'; //<< B.InverseMatrix().det() << '\n';
-	}
-	{
-		std::vector<std::vector<double>> b = { {1,0,0,0,0},{0,0,3,0,0},{0,1,0,0,0},{0,0,0,1,0},{0,0,0,0,1} };
-		Matrix<5, 5, double> B(b);
-		std::cout << B << '\n';
-		std::cout << "fuck: " << std::endl << B * B.InverseMatrix() << '\n';
-	}
+	// {
+	// 	std::vector<std::vector<double>> b = { {1,1,0},{1,0,1},{0,1,1} };
+	// 	Matrix<3, 3, double> B(b);
+	// 	std::cout << "fuck: " << std::endl << B.InverseMatrix() << '\n'; //<< B.InverseMatrix().det() << '\n';
+	// }
+	// {
+	// 	std::vector<std::vector<double>> b = { {1,0,0,0,0},{0,0,3,0,0},{0,1,0,0,0},{0,0,0,1,0},{0,0,0,0,1} };
+	// 	Matrix<5, 5, double> B(b);
+	// 	std::cout << B << '\n';
+	// 	std::cout << "fuck: " << std::endl << B * B.InverseMatrix() << '\n';
+	// }
 	//{
 	//	std::vector<std::vector<double>> b = { {1,1,1,1,1}, {1,2,1,1,1},{1,1,3,1,1},{1,1,1,4,1},{1,1,1,1,5} };
 	//	Matrix<5, 5, double> B(b);
