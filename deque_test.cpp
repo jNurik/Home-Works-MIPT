@@ -11,7 +11,7 @@ template <typename T>
 class Deque {
   private:
   //size of internal array
-  static const size_t kSzInternalArr = 32;
+  static const size_t kSzInternalArr = 8;
   //size of external array
   size_t size_ = 0;
   //real size of external array
@@ -37,8 +37,7 @@ class Deque {
     //pointer to an external array
     T** ptr_ = nullptr;
     //Position in the internal array
-    size_t pos_external_arr_  = 0;
-    size_t pos
+    std::ptrdiff_t pos_  = 0;
     public:
 
     using iterator_category = std::random_access_iterator_tag;
@@ -93,14 +92,18 @@ class Deque {
       --pos_;
       return tmp;
     }
+    external_array_
+    externalArray
 
     CommonIterator<IsConst>& operator+=(difference_type number) noexcept {
-      ptr_ += ((number + pos_) / kSzInternalArr);
+      ptr_ += (number + pos_) / kSzInternalArr;
       pos_ = (number + pos_) % kSzInternalArr;
       return *this;
     }
     CommonIterator<IsConst>& operator-=(difference_type number) noexcept {
-      ptr_ -= (number - pos_) / kSzInternalArr;
+      if (pos_ <= number) {
+        ptr_ -= DivCeil((number - pos_), kSzInternalArr);
+      }
       pos_ = (pos_ - number) % kSzInternalArr;
       return *this;
     }
@@ -135,8 +138,7 @@ class Deque {
     }
 
     template <bool IsBool>
-    bool operator==(const CommonIterator<IsBool>& iter) const noexcept {
-      return !(*this < iter) && !(iter < *this);
+    bool operator==(const CommonIterator<IsBool>& iter) const noexcept {     return !(*this < iter) && !(iter < *this);
     }
 
     template <bool IsBool>
@@ -509,45 +511,52 @@ typename Deque<T>::const_iterator Deque<T>::cend() const noexcept {
 template <typename T>
 typename Deque<T>::reverse_iterator Deque<T>::rbegin() noexcept {
   Deque<T>::iterator iter = this -> end();
-  return reverse_iterator(iter);
+  // if(!empty()) {
+  //   --iter;
+  // }
+  reverse_iterator riter = reverse_iterator(iter);
+  return riter;
 }
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rbegin() const noexcept {
   Deque<T>::const_iterator iter = this -> end();
+  // if(!empty()) {
+  //   --iter;
+  // }
   return const_reverse_iterator(iter);
 }
 
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rend() const noexcept {
   Deque<T>::const_iterator iter = this -> begin();
-  if(!empty()) {
-    --iter;
-  }
+  // if(!empty()) {
+  //   --iter;
+  // }
   return const_reverse_iterator(iter);
 }
 template <typename T>
 typename Deque<T>::reverse_iterator Deque<T>::rend() noexcept {
   Deque<T>::iterator iter = this -> begin();
-  if(!empty()) {
-    --iter;
-  }
+  // if(!empty()) {
+  //   --iter;
+  // }
   return reverse_iterator(iter);
 }
 
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rcbegin() const noexcept {
   Deque<T>::const_iterator iter = this -> end();
-  if(!empty()) {
-    --iter;
-  }
+  // if(!empty()) {
+  //   --iter;
+  // }
   return const_reverse_iterator(iter);
 }
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rcend() const noexcept {
   Deque<T>::const_iterator iter = this -> begin();
-  if(!empty()) {
-    --iter;
-  }
+  // if(!empty()) {
+  //   --iter;
+  // }
   return const_reverse_iterator(iter);
 }
 
@@ -686,6 +695,7 @@ size_t kDistrEnd = 100;
 #include <random>
 #include <type_traits>
 int main() {
+  /*
     std::cout << "DequeAccess.StaticAsserts:" << std::endl;
   {
     Deque<size_t> defaulted;
@@ -744,33 +754,36 @@ int main() {
       std::cout << (d.end() - d.size() == d.begin());//!
       std::cout << std::endl;
     }
-  }
-  std::cout << std::endl << "iter: " << std::endl;
-  {
-    const size_t number = 1000;
-    Deque<int> g(number, 0);
-    Deque<int>::reverse_iterator iter1 = g.rend();
-    Deque<int>::reverse_iterator iter2 = g.rbegin();
-    Deque<int>::reverse_iterator iter3 = g.rend();
-    Deque<int>::reverse_iterator iter4 = g.rbegin();
-    size_t i = 0;
-    size_t diff = 0;
-    while (iter1 > iter4) {
-      iter4 += i;
-      diff += i;
-      std::cout << (iter1 - iter4) << " diff " << diff << " i: " << i << std::endl;
-      ++i;
-    }
-  }
-  std::cout << " oi" << std::endl;
+  }*/
+
+  // std::cout << std::endl << "iter: " << std::endl;
+  // {
+  //   const size_t number = 20;
+  //   Deque<int> g(number, 0);
+  //   Deque<int>::reverse_iterator iter1 = g.rend();
+  //   Deque<int>::reverse_iterator iter2 = g.rbegin();
+  //   // Deque<int>::reverse_iterator iter3 = g.rend();
+  //   // Deque<int>::reverse_iterator iter4 = g.rbegin();
+  //   size_t i = 0;
+  //   size_t diff = 0;
+  //   while (iter1 > iter2) {
+  //     iter1 -= i;
+  //     diff += i;
+  //     std::cout << (iter1 - iter2) << " diff " << diff << " i: " << i << std::endl;
+  //     ++i;
+  //   }
+  // }
+
+  // std::cout << " oi" << std::endl;
   
-  {
-    size_t num = 3485;
-    for (size_t i = 0; i < num; ++i)  {
-      Deque<int> g(i, 10);
-      if (g.rend() - g.size() != g.rbegin()) std::cout << "fuck ";
-    }
-  }
+  // {
+  //   size_t num = 8374;
+  //   for (size_t i = 0; i < num; ++i)  {
+  //     Deque<int> g(i, 10);
+  //     std::cout << g.rend() - g.rbegin() << "  size: " << g.size() << std::endl;
+  //     // if (g.rend() - g.size() != g.rbegin()) std::cout << "fuck ";
+  //   }
+  // }
   std::cout << "DequeIterators.Algorithm: " << std::endl;
   {
     Deque<int> d(1000, 3);
@@ -789,19 +802,26 @@ int main() {
     // std::sort(s.begin(), s.end());
 
     //!-----------------------------------
+    std::cout << "o";
     std::shuffle(d.begin(), d.end(), g);
+    std::cout << "o";
 
     std::sort(d.rbegin(), d.rbegin() + 500);
-
+    std::cout << "o" << std::endl;
+    for (size_t i = 0; i < 1000; ++i)  {
+      std::cout << d.at(i) << " ";
+      // if (i  % 30 == 0) std::cout << std::endl; 
+    }
+    std::cout << std::endl;
     std::reverse(d.begin(), d.end());
-    // for (size_t i = 0; i < 1000; ++i)  {
-    //   std::cout << d.at(i) << " ";
-    //   // if (i  % 30 == 0) std::cout << std::endl; 
-
+    for (size_t i = 0; i < 1000; ++i)  {
+      std::cout << d.at(i) << " ";
+      // if (i  % 30 == 0) std::cout << std::endl; 
+    }
 
     // auto sorted_border = std::is_sorted_until(d.begin(), d.end());//!
     
-    // auto sorted_border = std::is_sorted_until(d.begin(), d.end());//!
+    // // auto sorted_border = std::is_sorted_until(d.begin(), d.end());//!
 
     auto sorted_border = std::is_sorted_until(d.begin(), d.end());//!
 

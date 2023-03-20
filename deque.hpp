@@ -511,52 +511,34 @@ typename Deque<T>::const_iterator Deque<T>::cend() const noexcept {
 template <typename T>
 typename Deque<T>::reverse_iterator Deque<T>::rbegin() noexcept {
   Deque<T>::iterator iter = this -> end();
-  // if(!empty()) {
-  //   --iter;
-  // }
   reverse_iterator riter = reverse_iterator(iter);
   return riter;
 }
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rbegin() const noexcept {
   Deque<T>::const_iterator iter = this -> end();
-  // if(!empty()) {
-  //   --iter;
-  // }
   return const_reverse_iterator(iter);
 }
 
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rend() const noexcept {
   Deque<T>::const_iterator iter = this -> begin();
-  // if(!empty()) {
-  //   --iter;
-  // }
   return const_reverse_iterator(iter);
 }
 template <typename T>
 typename Deque<T>::reverse_iterator Deque<T>::rend() noexcept {
   Deque<T>::iterator iter = this -> begin();
-  // if(!empty()) {
-  //   --iter;
-  // }
   return reverse_iterator(iter);
 }
 
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rcbegin() const noexcept {
   Deque<T>::const_iterator iter = this -> end();
-  // if(!empty()) {
-  //   --iter;
-  // }
   return const_reverse_iterator(iter);
 }
 template <typename T>
 typename Deque<T>::const_reverse_iterator Deque<T>::rcend() const noexcept {
   Deque<T>::const_iterator iter = this -> begin();
-  // if(!empty()) {
-  //   --iter;
-  // }
   return const_reverse_iterator(iter);
 }
 
